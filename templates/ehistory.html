@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Expenses History
+{% endblock %}
+
+{% block main %}
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md">
+        <button class="btn btn-dark me-md-2" type="button" style="border-radius: 60px;"><a href="/expenses" style="color: white; text-decoration: none;">This Month</a></button>
+        <button class="btn btn-dark" type="button" style="border-radius: 60px;"><a href="#" style="color: white; text-decoration: none;">History</a></button>
+    </div>
+    <br>
+    <h1>Expenses History</h1>
+    <div class="input-group md-form form-sm form-1 pl-0">
+        <div class="input-group-prepend">
+            <span class="input-group-text lighten-3" id="basic-text1">
+                <i class="fas fa-search text-white" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                    </svg>
+                </i>
+            </span>
+        </div>
+        <input class="form-control my-0 py-1" id="tableSearch" type="text" placeholder="Search expenses history" aria-label="Search">
+    </div>
+    <br>
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Item</th>
+                <th scope="col">Description</th>
+                <th scope="col">Category</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Receipt</th>
+            </tr>
+        </thead>
+        <tbody id="myTable">
+            {% for data in expenses_data %}
+                <tr>
+                    <th scope="row">{{ data.date }}</th>
+                    <td>{{ data.item }}</td>
+                    <td>{{ data.description }}</td>
+                    <td>{{ data.category }}</td>
+                    <td>{{ data.amount }}</td>
+                    <td><button type="button" class="btn btn-outline-light" name="openfile" id="openFile" file_name="{{ data.receipt }}" onclick="openFile(event)">Receipt</button></td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

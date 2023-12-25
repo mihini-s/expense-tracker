@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Apology
+{% endblock %}
+
+{% block main %}
+<!-- https://memegen.link/ -->
+    <img alt="{{ top }}" class="border img-fluid" src="https://api.memegen.link/images/custom/{{ top | urlencode }}/{{ bottom | urlencode }}.jpg?background=https://img.wallscloud.net/uploads/thumb/1192583434/trippy-space-dudedude-1-59581-630x270-MM-80.webp&font=impact&width=800
+                                                      " title="{{ top }}" style="border-radius: 70px; margin: 10% 16%;">
+{% endblock %}

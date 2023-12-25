@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block title %}
+    All
+{% endblock %}
+
+{% block main %}
+    <h1>
+        All
+        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">
+            <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z" />
+            <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0" />
+        </svg>
+    </h1>
+    <a href="/debt_tracker" class="btn btn-dark me-md-2" style="border-radius: 60px; color: white; text-decoration: none; margin-top: 10px;">To do</a>
+    <a href="#" class="btn btn-dark me-md-2" style="border-radius: 60px; color: white; text-decoration: none; margin-top: 10px;">All</a>
+    <a href="/completed" class="btn btn-dark me-md-2" style="border-radius: 60px; color: white; text-decoration: none; margin-top: 10px;">
+        Completed
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+            <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+            <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+        </svg>
+    </a>
+    <br><br>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="input-group md-form form-sm form-1 pl-0">
+                <div class="input-group-prepend">
+                    <span class="input-group-text lighten-3" id="icon" style="border-radius: 60px;">
+                        <i class="fas fa-search text-white" aria-hidden="true" style="border-radius: 60px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                        </i>
+                    </span>
+                </div>
+                <input class="form-control my-0 py-1" id="debtSearch" type="text" placeholder="Search" aria-label="Search" style="border-radius: 60px;">
+            </div>
+        </div>
+    </div>
+    <hr>
+    <table class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Due Date</th>
+                <th scope="col">Debt</th>
+                <th scope="col">Creditor</th>
+                <th scope="col">Info</th>
+                <th scope="col">Status</th>
+                <th scope="col">Completed date</th>
+            </tr>
+        </thead>
+        <tbody id="debtTable">
+            {% for data in debt_data %}
+                <tr>
+                    <th>{{data.date}}</th>
+                    <td>{{data.debt}}</td>
+                    <td style="overflow-wrap: break-word;
+                               word-wrap: break-word;
+                               max-width: 100%;">{{data.creditor}}</td>
+                </td>
+                <td style="overflow-wrap: break-word;
+                           word-wrap: break-word;
+                           max-width: 100%;">{{data.info}}</td>
+                <td>{{data.done}}</td>
+                <td>{{data.done_time}}</td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+
+
+{% endblock %}

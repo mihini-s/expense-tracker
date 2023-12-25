@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+
+    <h1>Summary</h1>
+    <p><i><b>Date:</b> {{date}}</i></p>
+    <div class="container text-center">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="index_text" style="height: 90%">
+                        <p style="text-align: left; border-bottom:1px dotted #000;"><b>TOTAL BALANCE:</b></p>
+                        <p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" style="position: absolute; left: 25px" class="bi bi-piggy-bank-fill" viewBox="0 0 16 16">
+                                <path d="M7.964 1.527c-2.977 0-5.571 1.704-6.32 4.125h-.55A1 1 0 0 0 .11 6.824l.254 1.46a1.5 1.5 0 0 0 1.478 1.243h.263c.3.513.688.978 1.145 1.382l-.729 2.477a.5.5 0 0 0 .48.641h2a.5.5 0 0 0 .471-.332l.482-1.351c.635.173 1.31.267 2.011.267.707 0 1.388-.095 2.028-.272l.543 1.372a.5.5 0 0 0 .465.316h2a.5.5 0 0 0 .478-.645l-.761-2.506C13.81 9.895 14.5 8.559 14.5 7.069c0-.145-.007-.29-.02-.431.261-.11.508-.266.705-.444.315.306.815.306.815-.417 0 .223-.5.223-.461-.026a.95.95 0 0 0 .09-.255.7.7 0 0 0-.202-.645.58.58 0 0 0-.707-.098.735.735 0 0 0-.375.562c-.024.243.082.48.32.654a2.112 2.112 0 0 1-.259.153c-.534-2.664-3.284-4.595-6.442-4.595Zm7.173 3.876a.565.565 0 0 1-.098.21.704.704 0 0 1-.044-.025c-.146-.09-.157-.175-.152-.223a.236.236 0 0 1 .117-.173c.049-.027.08-.021.113.012a.202.202 0 0 1 .064.199Zm-8.999-.65a.5.5 0 1 1-.276-.96A7.613 7.613 0 0 1 7.964 3.5c.763 0 1.497.11 2.18.315a.5.5 0 1 1-.287.958A6.602 6.602 0 0 0 7.964 4.5c-.64 0-1.255.09-1.826.254ZM5 6.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0" />
+                            </svg>
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" style="position: absolute; left: 80px" class="bi bi-cash-stack" viewBox="0 0 16 16">
+                                    <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                                    <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z" />
+                                </svg>
+                            </span>
+                        </p>
+                        <div>
+                            <br>
+                            <p><span style="font-size: 40px">{{currency}}</span> <span class="price" style="font-size: 80px;">{{total_balance}}</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="total" style="margin-bottom: 10px; background-color: #f6f5f3">
+                                <div class="txt">
+                                    <p><b>TOTAL INCOME</b> <br> this month <br> <span>{{currency}}</span> <span class="price">{{total_income}}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="total" style=" background-color: #393f4d; color: white;">
+                                <div class="txt">
+                                    <p><b>TOTAL EXPENSES</b> <br> this month <br> <span>{{currency}}</span> <span class="price">{{total_expenses}}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div id="income_donutchart"></div>
+                </div>
+                <div class="col-sm-3">
+                    <div id="expenses_donutchart"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div id="curve_chart"></div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="index_text" style="height: 90%">
+                        <b>Debt Tracker</b>
+                        <table class="table table-sm" style="font-size: 12px">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col"><i>Due</i></th>
+                                    <th scope="col"><i>Amount</i></th>
+                                    <th scope="col"><i>Creditor</i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in debt_data %}
+                                    <tr>
+                                        <td>{{data.month}}/{{data.day}}</td>
+                                        <td>{{data.debt}}</td>
+                                        <td>{{data.creditor}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="index_text" style="height: 95%;">
+                        <b>Recent Income</b>
+                        <table class="table table-sm" style="font-size: 12px;">
+                            <thead class="table-warning">
+                                <tr>
+                                    <th scope="col"><i>Date</i></th>
+                                    <th scope="col"><i>Category</i></th>
+                                    <th scope="col"><i>Amount</i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in income_data %}
+                                    <tr>
+                                        <td>{{item.month}}/{{item.day}}</td>
+                                        <td>{{item.category}}</td>
+                                        <td>{{item.amount}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="index_text" style="height: 95%">
+                        <b>Recent Expenses</b>
+                        <table class="table table-sm" style="font-size: 12px">
+                            <thead class="table-success">
+                                <tr>
+                                    <th scope="col"><i>Date</i></th>
+                                    <th scope="col"><i>Category</i></th>
+                                    <th scope="col"><i>Price</i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in expenses_data %}
+                                    <tr>
+                                        <td>{{item.month}}/{{item.day}}</td>
+                                        <td>{{item.category}}</td>
+                                        <td>{{item.day}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div role="pbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="--value: {{budget_consumed}}; --info: 'Budget'"></div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div role="pbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="--value: {{income_consumed}}; --info: 'Spent'"></div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div role="pbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="--value: {{goal_reached}};; --info: 'Goal'"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="index_text" style="height: 80%; font-size: 15px;">
+                            <p>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-quote" viewBox="0 0 16 16">
+                                    <path d="M12 12a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1h-1.388c0-.351.021-.703.062-1.054.062-.372.166-.703.31-.992.145-.29.331-.517.559-.683.227-.186.516-.279.868-.279V3c-.579 0-1.085.124-1.52.372a3.322 3.322 0 0 0-1.085.992 4.92 4.92 0 0 0-.62 1.458A7.712 7.712 0 0 0 9 7.558V11a1 1 0 0 0 1 1zm-6 0a1 1 0 0 0 1-1V8.558a1 1 0 0 0-1-1H4.612c0-.351.021-.703.062-1.054.062-.372.166-.703.31-.992.145-.29.331-.517.559-.683.227-.186.516-.279.868-.279V3c-.579 0-1.085.124-1.52.372a3.322 3.322 0 0 0-1.085.992 4.92 4.92 0 0 0-.62 1.458A7.712 7.712 0 0 0 3 7.558V11a1 1 0 0 0 1 1z" />
+                                </svg>
+                                We make a living by what we get, but we make a life by what we give. <br> --Winston Churchill
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

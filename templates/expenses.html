@@ -1,0 +1,314 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Expenses
+{% endblock %}
+
+{% block main %}
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md">
+        <button class="btn btn-dark me-md-2" type="button" style="border-radius: 60px;"><a href="#" style="color: white; text-decoration: none;">This Month</a></button>
+        <button class="btn btn-dark" type="button" style="border-radius: 60px;"><a href="/ehistory" style="color: white; text-decoration: none;">History</a></button>
+    </div>
+    <br>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col">
+                <div class="index_text" style="height: 30%; ">
+                    <p style="text-align: left; border-bottom:1px dotted #000;"><b>TOTAL EXPENSES:</b><br><i style="font-size: 15px;">{{month}}</i></p>
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-cash-coin" style="position: absolute; left: 10px" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8m5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0" />
+                            <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1h-.003zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195l.054.012z" />
+                            <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083c.058-.344.145-.678.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1z" />
+                            <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z" />
+                        </svg>
+                        <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" style="position: absolute; left: 50px" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8" />
+                            </svg>
+                        </span>
+                    </p>
+                    <div>
+                        <hr style="color: white;">
+                        <p><span style="font-size: 40px">{{currency}}</span> <span class="price" style="font-size: 50px;">{{expense_total | decimal}}</span></p>
+                    </div>
+                </div>
+                <br><br>
+                <div id="expenses_column_chart"></div>
+                <br>
+                <div class="progress" role="progressbar" aria-label="Monthly budget consumed" aria-valuenow="{{budget_consumed}}" aria-valuemin="0" aria-label="Monthly budget consumed" aria-valuemax="100" style="border: 2px solid black; height: 20px;">
+                    {% if budget_consumed > 100 %}
+                        <div class="progress-bar progress-bar-striped bg-danger text-bg-warning" style="width: {{budget_consumed}}%;"><b>{{budget_consumed}}%</b></div>
+                    {% else %}
+                        <div class="progress-bar progress-bar-striped bg-black text-bg-white" style="width: {{budget_consumed}}%;"><b>{{budget_consumed}}%</b></div>
+                    {% endif %}
+                </div>
+                <p><b>Monthly Budget</b></p>
+                <div class="progress" role="progressbar" aria-label="Income consumed" aria-valuenow="{{income_consumed}}" aria-valuemin="0" aria-label="Income consumed" aria-valuemax="100" style="border: 2px solid black; height: 20px;">
+                    {% if income_consumed > 100 %}
+                        <div class="progress-bar progress-bar-striped bg-danger text-bg-warning" style="width: {{income_consumed}}%;"><b>{{income_consumed}}%</b></div>
+                    {% else %}
+                        <div class="progress-bar progress-bar-striped" style="width: {{income_consumed}}%;"><b>{{income_consumed}}%</b></div>
+                    {% endif %}
+                </div>
+                <p><b>Total Income Consumed</b></p>
+            </div>
+            <div class="col">
+                <div class="index_text" style="height: 560px; overflow-y: auto">
+                    <table class="table table-hover" style="font-size: 18px;">
+                        <thead class="table-primary">
+                            <tr>
+                                <th scope="col">Day</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Amount/{{currency}}</th>
+                                <th scope="col">Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 15px;">
+                            {% for item in expense_data %}
+                                <tr>
+                                    <th scope="row">{{item.day}}</th>
+                                    <td>{{item.item}}</td>
+                                    <td>{{item.amount}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#edit_entry_{{ item.expenses_id }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                            </svg>
+                                        </button>
+                                        <div class="modal fade" id="edit_entry_{{ item.expenses_id }}" tabindex="-1" aria-labelledby="edit entry" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="index_text" style="height: 75%; background-color: #2C3639; border-color: #2C3639">
+                                                            <h3 style="text-align: left; color: white;">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                                                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                                                </svg>
+                                                                Edit:
+                                                            </h3>
+                                                            <br>
+                                                            <form action="/update_expenses" method="post" enctype="multipart/form-data">
+                                                                <div class="row">
+                                                                    <div class="col" hidden>
+                                                                        <input required type="text" class="form-control" id="expenses_id" name="expenses_id" value="{{item.expenses_id}}" hidden>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <input required type="date" class="form-control" placeholder="Date purchased" aria-label="Date purchased" id="datepurchased" name="datepurchased" value="{{item.date}}" required>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <div class="input-group mb-3">
+                                                                            <span class="input-group-text">{{currency}}</span>
+                                                                            <input type="number" class="form-control" aria-label="Amount" placeholder="Amount" id="amount" name="amount" value="{{item.amount}}" required>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <input required type="text" class="form-control" placeholder="Item" aria-label="Item" id="item" name="item" value="{{item.item}}" required>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <div class="input-group">
+                                                                            <select class="form-select" id="select_expense_category" name="select_expense_category" aria-label="Select expenses category" required>
+                                                                                <option value="Grocery" {% if item.category == 'Grocery' %}selected{% endif %}>Grocery</option>
+                                                                                <option value="Shopping" {% if item.category == 'Shopping' %}selected{% endif %}>Shopping</option>
+                                                                                <option value="Utilities" {% if item.category == 'Utilities' %}selected{% endif %}>Utilities</option>
+                                                                                {% for category in categories %}
+                                                                                    <option value="{{ category.category_name }}" {% if category.category_name == item.category %}selected{% endif %}>
+                                                                                        {{ category.category_name }}
+                                                                                    </option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <textarea class="form-control" id="itemdescription" name="itemdescription" rows="2" placeholder="Item description (optional)">{{item.description}}</textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <div class="mb-3" style="text-align: left; color: white; font-size: 15px;">
+                                                                            <label for="receipt" class="form-label">Receipt: {{item.receipt}}</label>
+                                                                            <input class="form-control" type="file" id="receipt" name="receipt">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn" style="background-color: #212529; color: white" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-danger">Save Changes</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#trash_{{ item.expenses_id }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                            </svg>
+                                        </button>
+                                        <div class="modal fade" id="trash_{{ item.expenses_id }}" tabindex="-1" aria-labelledby="trash" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="trashLabel">Delete</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <b style="font-size: 15px;">Are you sure you want to delete this?</b>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn" style="background-color: #212529; color: white" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-danger" onclick="delete_expense_log(event)" expense_id="{{item.expenses_id}}">Yes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col">
+                <div class="index_text" style="height: 72%; background-color: #541212">
+                    <h3 style="text-align: left; color: white;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0" />
+                        </svg>
+                        Add New:
+                        <p style="font-size:12px ;position: absolute; left: 50px">Expenses this month</p>
+                    </h3>
+                    <br>
+                    <form action="/expenses" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col">
+                                <input required type="date" class="form-control" placeholder="Date purchased" aria-label="Date purchased" id="datePurchased" name="datePurchased">
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">{{currency}}</span>
+                                    <input type="number" class="form-control" aria-label="Amount" placeholder="Amount" min="0" name="amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input required type="text" class="form-control" placeholder="Item" aria-label="Item" id="item" name="item">
+                            </div>
+                            <div class="col">
+                                <div class="input-group">
+                                    <select class="form-select" id="input_category" aria-label="input_category" name="expense_category">
+                                        <option disabled selected>Category</option>
+                                        <option value="Groceries">Groceries</option>
+                                        <option value="Shopping">Shopping</option>
+                                        <option value="Utilities">Utilities</option>
+                                        {% for category in categories %}
+                                            <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#addexpensecategory">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                        </svg>
+                                    </button>
+                                    <div class="modal fade" id="addexpensecategory" tabindex="-1" aria-labelledby="addexpensecategory" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="addexpensecategory">Add expense category</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <input type="text" class="form-control" id="newexpensecategory" placeholder="e.g. Shopping">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn" style="background-color: #212529; color: white" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-danger" onclick="addExpenseCategory()">Add</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="row">
+                                <div class="col">
+                                    <textarea class="form-control" id="itemDescription" rows="2" placeholder="Item description (optional)" name="itemDescription"></textarea>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3" style="text-align: left; color: white; font-size: 15px;">
+                                        <label for="receipt" class="form-label">Receipt: </label>
+                                        <input class="form-control" type="file" id="receipt" name="receipt">
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-outline-light">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <br>
+                <div class="col">
+                    <div class="index_text" style="height: 125px; background-color: #8B9A46">
+                        <h4 style="text-align: left">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5" />
+                            </svg>
+                            Goal:
+                            <br>
+                        </h4>
+                        <h6 style="text-align: left">Monthly budget: </h6>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">{{currency}}</span>
+                            <span class="input-group-text" id="displayBudget">{{budget}}</span>
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#budget">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                </svg>
+                            </button>
+                            <div class="modal fade" id="budget" tabindex="-1" aria-labelledby="budget" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="budget">Monthly Budget</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text">{{currency}}</span>
+                                                <input type="number" class="form-control" aria-label="budget" placeholder="100" id="addbudget" min="0">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn" style="background-color: #212529; color: white" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-danger" onclick="budget()">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
