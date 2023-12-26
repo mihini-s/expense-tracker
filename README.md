@@ -1,5 +1,5 @@
 # Expense Tracker
-#### Video Demo:  [Demo](https://www.youtube.com/watch?v=x-waIk9i8D8)
+#### Video Demo:  https://www.youtube.com/watch?v=x-waIk9i8D8
 ### Description
 ***
 My final CS50x project is a web-based application that enables the user to organize their finances and visualize them through a user-friendly dashboard. The user is first validated before registering, and then they have the ability to add, edit, and delete expenses and income each month. This data is used to create charts, tables, and also to make calculations. There is a debt tracker functionality that helps the user prioritize and keep track of their debts.
